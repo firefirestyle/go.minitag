@@ -3,7 +3,6 @@ package tag
 import (
 	//	"encoding/json"
 	"strings"
-	"time"
 
 	//	"github.com/firefirestyle/go.miniprop"
 	"golang.org/x/net/context"
@@ -11,26 +10,9 @@ import (
 	"google.golang.org/appengine/log"
 )
 
-type GaeObjectTag struct {
-	ProjectId string
-	MainTag   string
-	SubTag    string
-	TargetId  string
-	Info      string `datastore:",noindex"`
-	Created   time.Time
-	Priority  int
-	Type      string
-}
-
 type MiniTagManager struct {
 	kind      string
 	rootGroup string
-}
-
-type MiniTag struct {
-	gaeObject    *GaeObjectTag
-	gaeObjectKey *datastore.Key
-	kind         string
 }
 
 type TagSource struct {

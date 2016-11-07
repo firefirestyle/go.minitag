@@ -1,14 +1,8 @@
 package tag
 
 import (
-	//	"encoding/json"
-	"strings"
-	"time"
-
-	//	"github.com/firefirestyle/go.miniprop"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
-	"google.golang.org/appengine/log"
 )
 
 /*

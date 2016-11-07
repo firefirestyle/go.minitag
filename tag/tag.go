@@ -10,6 +10,23 @@ import (
 	"google.golang.org/appengine/memcache"
 )
 
+type GaeObjectTag struct {
+	ProjectId string
+	MainTag   string
+	SubTag    string
+	TargetId  string
+	Info      string `datastore:",noindex"`
+	Created   time.Time
+	Priority  int
+	Type      string
+}
+
+type MiniTag struct {
+	gaeObject    *GaeObjectTag
+	gaeObjectKey *datastore.Key
+	kind         string
+}
+
 func (obj *MiniTag) GetProjectId() string {
 	return obj.gaeObject.ProjectId
 }
