@@ -10,7 +10,7 @@ import (
 	"google.golang.org/appengine/memcache"
 )
 
-func (obj *MiniTagManager) NewTag(ctx context.Context, mainTag string, //
+func (obj *TagManager) NewTag(ctx context.Context, mainTag string, //
 	subTag string, target string, tagType string) *MiniTag {
 	ret := new(MiniTag)
 	ret.gaeObject = new(GaeObjectTag)
@@ -24,13 +24,13 @@ func (obj *MiniTagManager) NewTag(ctx context.Context, mainTag string, //
 	return ret
 }
 
-func (obj *MiniTagManager) NewTagKey(ctx context.Context, mainTag string, //
+func (obj *TagManager) NewTagKey(ctx context.Context, mainTag string, //
 	subTag string, targetId string, ttype string) *datastore.Key {
 	ret := datastore.NewKey(ctx, obj.kind, obj.MakeStringId(mainTag, subTag, targetId, ttype), 0, nil)
 	return ret
 }
 
-func (obj *MiniTagManager) MakeStringId(mainTag string, //
+func (obj *TagManager) MakeStringId(mainTag string, //
 	subTag string, targetId string, ttype string) string {
 	propObj := miniprop.NewMiniProp()
 	propObj.SetString("p", obj.rootGroup)
@@ -49,7 +49,7 @@ type TagKeyInfo struct {
 	TagType   string
 }
 
-func (obj *MiniTagManager) GetKeyInfoFromStringId(stringId string) TagKeyInfo {
+func (obj *TagManager) GetKeyInfoFromStringId(stringId string) TagKeyInfo {
 	propObj := miniprop.NewMiniPropFromJson([]byte(stringId))
 	return TagKeyInfo{
 		RootGroup: propObj.GetString("p", ""),
@@ -60,7 +60,7 @@ func (obj *MiniTagManager) GetKeyInfoFromStringId(stringId string) TagKeyInfo {
 	}
 }
 
-func (obj *MiniTagManager) NewTagFromKey(ctx context.Context, gaeKey *datastore.Key) (*MiniTag, error) {
+func (obj *TagManager) NewTagFromKey(ctx context.Context, gaeKey *datastore.Key) (*MiniTag, error) {
 
 	ret := new(MiniTag)
 	ret.kind = obj.kind

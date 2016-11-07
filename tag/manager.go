@@ -10,7 +10,7 @@ import (
 	"google.golang.org/appengine/log"
 )
 
-type MiniTagManager struct {
+type TagManager struct {
 	kind      string
 	rootGroup string
 }
@@ -32,14 +32,14 @@ const (
 	TypeType      = "Type"
 )
 
-func NewMiniTagManager(kind string, projectId string) *MiniTagManager {
-	ret := new(MiniTagManager)
+func NewTagManager(kind string, rootGroup string) *TagManager {
+	ret := new(TagManager)
 	ret.kind = kind
-	ret.rootGroup = projectId
+	ret.rootGroup = rootGroup
 	return ret
 }
 
-func (obj *MiniTagManager) DeleteTagsFromTargetId(ctx context.Context, targetId string, cursor string) (string, error) {
+func (obj *TagManager) DeleteTagsFromTargetId(ctx context.Context, targetId string, cursor string) (string, error) {
 	q := datastore.NewQuery(obj.kind)
 	q = q.Filter("RootGroup =", obj.rootGroup)
 	q = q.Filter("TargetId =", targetId)
@@ -51,7 +51,7 @@ func (obj *MiniTagManager) DeleteTagsFromTargetId(ctx context.Context, targetId 
 	return eCursor, nil
 }
 
-func (obj *MiniTagManager) AddPairTags(ctx context.Context, tagList []string, info string, targetId string) error {
+func (obj *TagManager) AddPairTags(ctx context.Context, tagList []string, info string, targetId string) error {
 	vs := obj.MakeTags(ctx, tagList)
 	for _, v := range vs {
 		log.Infof(ctx, ">>"+v.MainTag+" : "+v.SubTag)
@@ -64,7 +64,7 @@ func (obj *MiniTagManager) AddPairTags(ctx context.Context, tagList []string, in
 	return nil
 }
 
-func (obj *MiniTagManager) DeletePairTags(ctx context.Context, tagList []string, info string, targetId string) error {
+func (obj *TagManager) DeletePairTags(ctx context.Context, tagList []string, info string, targetId string) error {
 	vs := obj.MakeTags(ctx, tagList)
 	for _, v := range vs {
 		key := obj.NewTagKey(ctx, v.MainTag, v.SubTag, targetId, v.Type)
@@ -73,18 +73,18 @@ func (obj *MiniTagManager) DeletePairTags(ctx context.Context, tagList []string,
 	return nil
 }
 
-func (obj *MiniTagManager) AddMainTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string) error {
+func (obj *TagManager) AddMainTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string) error {
 	return obj.AddTag(ctx, tag1, tag2, info, targetId, "main")
 }
 
-func (obj *MiniTagManager) AddSubTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string) error {
+func (obj *TagManager) AddSubTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string) error {
 	return obj.AddTag(ctx, tag1, tag2, info, targetId, "sub")
 }
 
 //
 //
 //
-func (obj *MiniTagManager) AddTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string, Type string) error {
+func (obj *TagManager) AddTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string, Type string) error {
 	mainTag := tag1
 	subTag := tag2
 	if subTag != "" && strings.Compare(tag1, tag2) <= 0 {
@@ -96,21 +96,21 @@ func (obj *MiniTagManager) AddTag(ctx context.Context, tag1 string, tag2 string,
 	return tag.SaveOnDB(ctx)
 }
 
-func (obj *MiniTagManager) DeleteMainTag(ctx context.Context, MainTag string, SubTag string, TargetId string) error {
+func (obj *TagManager) DeleteMainTag(ctx context.Context, MainTag string, SubTag string, TargetId string) error {
 	return obj.DeleteTag(ctx, MainTag, SubTag, TargetId, "main")
 }
 
-func (obj *MiniTagManager) DeleteSubTag(ctx context.Context, MainTag string, SubTag string, TargetId string) error {
+func (obj *TagManager) DeleteSubTag(ctx context.Context, MainTag string, SubTag string, TargetId string) error {
 	return obj.DeleteTag(ctx, MainTag, SubTag, TargetId, "sub")
 }
 
-func (obj *MiniTagManager) DeleteTag(ctx context.Context, MainTag string, SubTag string, TargetId string, Type string) error {
+func (obj *TagManager) DeleteTag(ctx context.Context, MainTag string, SubTag string, TargetId string, Type string) error {
 	key := obj.NewTagKey(ctx, MainTag, SubTag, TargetId, Type)
 	datastore.Delete(ctx, key)
 	return nil
 }
 
-func (obj *MiniTagManager) MakeTags(ctx context.Context, tagList []string) []TagSource {
+func (obj *TagManager) MakeTags(ctx context.Context, tagList []string) []TagSource {
 	ret := make([]TagSource, 0)
 	for _, x := range tagList {
 		isSave := false

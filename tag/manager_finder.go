@@ -25,7 +25,7 @@ import (
 
 https://cloud.google.com/appengine/docs/go/config/indexconfig#updating_indexes
 */
-func (obj *MiniTagManager) FindTags(ctx context.Context, mainTag string, subTag string, cursorSrc string) ([]*MiniTag, string, string) {
+func (obj *TagManager) FindTags(ctx context.Context, mainTag string, subTag string, cursorSrc string) ([]*MiniTag, string, string) {
 	q := datastore.NewQuery(obj.kind)
 	q = q.Filter("ProjectId =", obj.rootGroup)
 	q = q.Filter("MainTag =", mainTag)
@@ -49,7 +49,7 @@ func (obj *MiniTagManager) FindTags(ctx context.Context, mainTag string, subTag 
     direction: desc
 https://cloud.google.com/appengine/docs/go/config/indexconfig#updating_indexes
 */
-func (obj *MiniTagManager) FindTagFromTargetId(ctx context.Context, targetTag string, cursorSrc string) ([]*MiniTag, string, string) {
+func (obj *TagManager) FindTagFromTargetId(ctx context.Context, targetTag string, cursorSrc string) ([]*MiniTag, string, string) {
 	q := datastore.NewQuery(obj.kind)
 	q = q.Filter("ProjectId =", obj.rootGroup)
 	q = q.Filter("TargetId =", targetTag)
@@ -57,7 +57,7 @@ func (obj *MiniTagManager) FindTagFromTargetId(ctx context.Context, targetTag st
 	return obj.FindTagFromQuery(ctx, q, cursorSrc)
 }
 
-func (obj *MiniTagManager) FindTagKeyFromQuery(ctx context.Context, q *datastore.Query, cursorSrc string) ([]*datastore.Key, string, string) {
+func (obj *TagManager) FindTagKeyFromQuery(ctx context.Context, q *datastore.Query, cursorSrc string) ([]*datastore.Key, string, string) {
 	cursor := obj.newCursorFromSrc(cursorSrc)
 	if cursor != nil {
 		q = q.Start(*cursor)
@@ -86,7 +86,7 @@ func (obj *MiniTagManager) FindTagKeyFromQuery(ctx context.Context, q *datastore
 	return retUser, cursorOne, cursorNext
 }
 
-func (obj *MiniTagManager) FindTagFromQuery(ctx context.Context, q *datastore.Query, cursorSrc string) ([]*MiniTag, string, string) {
+func (obj *TagManager) FindTagFromQuery(ctx context.Context, q *datastore.Query, cursorSrc string) ([]*MiniTag, string, string) {
 	cursor := obj.newCursorFromSrc(cursorSrc)
 	if cursor != nil {
 		q = q.Start(*cursor)
@@ -118,7 +118,7 @@ func (obj *MiniTagManager) FindTagFromQuery(ctx context.Context, q *datastore.Qu
 	return retUser, cursorOne, cursorNext
 }
 
-func (obj *MiniTagManager) newCursorFromSrc(cursorSrc string) *datastore.Cursor {
+func (obj *TagManager) newCursorFromSrc(cursorSrc string) *datastore.Cursor {
 	c1, e := datastore.DecodeCursor(cursorSrc)
 	if e != nil {
 		return nil
@@ -127,7 +127,7 @@ func (obj *MiniTagManager) newCursorFromSrc(cursorSrc string) *datastore.Cursor 
 	}
 }
 
-func (obj *MiniTagManager) makeCursorSrc(founds *datastore.Iterator) string {
+func (obj *TagManager) makeCursorSrc(founds *datastore.Iterator) string {
 	c, e := founds.Cursor()
 	if e == nil {
 		return c.String()
