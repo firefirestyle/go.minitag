@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	//	"github.com/firefirestyle/go.miniprop"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/log"
@@ -23,7 +24,7 @@ type GaeObjectTag struct {
 
 type MiniTagManager struct {
 	kind      string
-	projectId string
+	rootGroup string
 }
 
 type MiniTag struct {
@@ -52,13 +53,13 @@ const (
 func NewMiniTagManager(kind string, projectId string) *MiniTagManager {
 	ret := new(MiniTagManager)
 	ret.kind = kind
-	ret.projectId = projectId
+	ret.rootGroup = projectId
 	return ret
 }
 
 func (obj *MiniTagManager) DeleteTagsFromTargetId(ctx context.Context, targetId string, cursor string) (string, error) {
 	q := datastore.NewQuery(obj.kind)
-	q = q.Filter("ProjectId =", obj.projectId)
+	q = q.Filter("ProjectId =", obj.rootGroup)
 	q = q.Filter("TargetId =", targetId)
 	q = q.Order("-Created")
 	r, _, eCursor := obj.FindTagKeyFromQuery(ctx, q, cursor)
@@ -178,7 +179,7 @@ https://cloud.google.com/appengine/docs/go/config/indexconfig#updating_indexes
 */
 func (obj *MiniTagManager) FindTags(ctx context.Context, mainTag string, subTag string, cursorSrc string) ([]*MiniTag, string, string) {
 	q := datastore.NewQuery(obj.kind)
-	q = q.Filter("ProjectId =", obj.projectId)
+	q = q.Filter("ProjectId =", obj.rootGroup)
 	q = q.Filter("MainTag =", mainTag)
 
 	if subTag != "" {
@@ -202,7 +203,7 @@ https://cloud.google.com/appengine/docs/go/config/indexconfig#updating_indexes
 */
 func (obj *MiniTagManager) FindTagFromTargetId(ctx context.Context, targetTag string, cursorSrc string) ([]*MiniTag, string, string) {
 	q := datastore.NewQuery(obj.kind)
-	q = q.Filter("ProjectId =", obj.projectId)
+	q = q.Filter("ProjectId =", obj.rootGroup)
 	q = q.Filter("TargetId =", targetTag)
 	q = q.Order("-Created").Limit(10)
 	return obj.FindTagFromQuery(ctx, q, cursorSrc)
