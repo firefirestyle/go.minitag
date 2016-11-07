@@ -29,6 +29,10 @@ func (obj *TagManager) NewTagKey(ctx context.Context, mainTag string, //
 	ret := datastore.NewKey(ctx, obj.kind, obj.MakeStringId(mainTag, subTag, targetId, ttype), 0, nil)
 	return ret
 }
+func (obj *TagManager) NewGaeKeyFromStringID(ctx context.Context, stringId string) *datastore.Key {
+	ret := datastore.NewKey(ctx, obj.kind, stringId, 0, nil)
+	return ret
+}
 
 func (obj *TagManager) MakeStringId(mainTag string, //
 	subTag string, targetId string, ttype string) string {

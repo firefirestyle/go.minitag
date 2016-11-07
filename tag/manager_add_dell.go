@@ -10,16 +10,39 @@ import (
 	"google.golang.org/appengine/log"
 )
 
-func (obj *TagManager) DeleteTagsFromTargetId(ctx context.Context, targetId string, cursor string) (string, error) {
-	q := datastore.NewQuery(obj.kind)
-	q = q.Filter("RootGroup =", obj.rootGroup)
-	q = q.Filter("TargetId =", targetId)
-	q = q.Order("-Created")
-	r, _, eCursor := obj.FindTagKeyFromQuery(ctx, q, cursor)
-	for _, v := range r {
-		datastore.Delete(ctx, v)
+func (obj *TagManager) DeleteTagsFromTargetId(ctx context.Context, targetId string) error {
+	cursor := ""
+	for {
+		ret := obj.FindTagFromTargetId(ctx, targetId, cursor)
+		if len(ret.Keys) <= 0 {
+			break
+		}
+		for _, v := range ret.Keys {
+			datastore.Delete(ctx, obj.NewGaeKeyFromStringID(ctx, v))
+		}
+		if ret.CursorOne == cursor {
+			break
+		}
+		cursor = ret.CursorNext
 	}
-	return eCursor, nil
+	return nil
+}
+func (obj *TagManager) DeleteTagsFromOwner(ctx context.Context, owner string) error {
+	cursor := ""
+	for {
+		ret := obj.FindTagFromOwner(ctx, owner, cursor)
+		if len(ret.Keys) <= 0 {
+			break
+		}
+		for _, v := range ret.Keys {
+			datastore.Delete(ctx, obj.NewGaeKeyFromStringID(ctx, v))
+		}
+		if ret.CursorOne == cursor {
+			break
+		}
+		cursor = ret.CursorNext
+	}
+	return nil
 }
 
 func (obj *TagManager) AddPairTags(ctx context.Context, tagList []string, targetId string, owner string, info string) error {
