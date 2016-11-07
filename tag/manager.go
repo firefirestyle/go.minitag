@@ -73,6 +73,10 @@ func (obj *TagManager) DeletePairTags(ctx context.Context, tagList []string, inf
 	return nil
 }
 
+func (obj *TagManager) AddBasicTag(ctx context.Context, tag1 string, info string, targetId string) error {
+	return obj.AddTag(ctx, tag1, "", info, targetId, "main")
+}
+
 func (obj *TagManager) AddMainTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string) error {
 	return obj.AddTag(ctx, tag1, tag2, info, targetId, "main")
 }
