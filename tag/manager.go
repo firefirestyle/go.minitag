@@ -22,7 +22,7 @@ type TagSource struct {
 }
 
 const (
-	TypeProjectId = "ProjectId"
+	TypeRootGroup = "RootGroup"
 	TypeMainTag   = "MainTag"
 	TypeSubTag    = "SubTag"
 	TypeTargetId  = "TargetId"
@@ -41,7 +41,7 @@ func NewMiniTagManager(kind string, projectId string) *MiniTagManager {
 
 func (obj *MiniTagManager) DeleteTagsFromTargetId(ctx context.Context, targetId string, cursor string) (string, error) {
 	q := datastore.NewQuery(obj.kind)
-	q = q.Filter("ProjectId =", obj.rootGroup)
+	q = q.Filter("RootGroup =", obj.rootGroup)
 	q = q.Filter("TargetId =", targetId)
 	q = q.Order("-Created")
 	r, _, eCursor := obj.FindTagKeyFromQuery(ctx, q, cursor)

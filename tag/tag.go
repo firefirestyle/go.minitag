@@ -70,7 +70,7 @@ func (obj *MiniTag) SaveOnDB(ctx context.Context) error {
 
 func (obj *MiniTag) toJson() (string, error) {
 	v := map[string]interface{}{
-		TypeProjectId: obj.gaeObject.ProjectId,
+		TypeRootGroup: obj.gaeObject.ProjectId,
 		TypeMainTag:   obj.gaeObject.MainTag,
 		TypeSubTag:    obj.gaeObject.SubTag,
 		TypeTargetId:  obj.gaeObject.TargetId,
@@ -91,7 +91,7 @@ func (obj *MiniTag) SetParamFromsJson(ctx context.Context, source []byte) error 
 		return e
 	}
 	//
-	obj.gaeObject.ProjectId = v[TypeProjectId].(string)
+	obj.gaeObject.ProjectId = v[TypeRootGroup].(string)
 	obj.gaeObject.MainTag = v[TypeMainTag].(string)
 	obj.gaeObject.SubTag = v[TypeSubTag].(string)
 	obj.gaeObject.TargetId = v[TypeTargetId].(string)
