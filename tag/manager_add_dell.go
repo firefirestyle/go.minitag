@@ -69,6 +69,17 @@ func (obj *TagManager) DeletePairTags(ctx context.Context, tagList []string, inf
 	return nil
 }
 
+func (obj *TagManager) AddBasicTags(ctx context.Context, tags []string, targetId string, owner string, info string) error {
+	for _, v := range tags {
+		Debug(ctx, "tag-:"+v+":-")
+		if v == "" {
+			continue
+		}
+		obj.AddBasicTag(ctx, v, targetId, owner, info)
+	}
+	return nil
+}
+
 func (obj *TagManager) AddBasicTag(ctx context.Context, tag1 string, targetId string, owner string, info string) error {
 	return obj.AddTag(ctx, tag1, "", targetId, "main", owner, info)
 }
