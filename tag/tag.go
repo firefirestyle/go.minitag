@@ -10,6 +10,18 @@ import (
 	"google.golang.org/appengine/memcache"
 )
 
+const (
+	TypeRootGroup = "RootGroup"
+	TypeMainTag   = "MainTag"
+	TypeSubTag    = "SubTag"
+	TypeTargetId  = "TargetId"
+	TypeInfo      = "Info"
+	TypeCreated   = "Created"
+	TypePriority  = "Priority"
+	TypeType      = "Type"
+	TypeOwner     = "Owner"
+)
+
 type GaeObjectTag struct {
 	ProjectId string
 	MainTag   string
@@ -17,6 +29,7 @@ type GaeObjectTag struct {
 	TargetId  string
 	Info      string `datastore:",noindex"`
 	Created   time.Time
+	Owner     string
 	Priority  int
 	Type      string
 }
@@ -78,6 +91,7 @@ func (obj *Tag) toJson() (string, error) {
 		TypeCreated:   obj.GetCreated().UnixNano(),
 		TypePriority:  obj.gaeObject.Priority,
 		TypeType:      obj.gaeObject.Type,
+		TypeOwner:     obj.gaeObject.Owner,
 	}
 	vv, e := json.Marshal(v)
 	return string(vv), e
@@ -99,6 +113,7 @@ func (obj *Tag) SetParamFromsJson(ctx context.Context, source []byte) error {
 	obj.gaeObject.Created = time.Unix(0, int64(v[TypeCreated].(float64))) //srcCreated
 	obj.gaeObject.Priority = int(v[TypePriority].(float64))
 	obj.gaeObject.Type = v[TypeType].(string)
+	obj.gaeObject.Owner = v[TypeOwner].(string)
 
 	return nil
 }

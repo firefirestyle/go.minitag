@@ -21,17 +21,6 @@ type TagSource struct {
 	Type    string
 }
 
-const (
-	TypeRootGroup = "RootGroup"
-	TypeMainTag   = "MainTag"
-	TypeSubTag    = "SubTag"
-	TypeTargetId  = "TargetId"
-	TypeInfo      = "Info"
-	TypeCreated   = "Created"
-	TypePriority  = "Priority"
-	TypeType      = "Type"
-)
-
 func NewTagManager(kind string, rootGroup string) *TagManager {
 	ret := new(TagManager)
 	ret.kind = kind
@@ -51,11 +40,13 @@ func (obj *TagManager) DeleteTagsFromTargetId(ctx context.Context, targetId stri
 	return eCursor, nil
 }
 
-func (obj *TagManager) AddPairTags(ctx context.Context, tagList []string, info string, targetId string) error {
+func (obj *TagManager) AddPairTags(ctx context.Context, tagList []string, targetId string, owner string, info string) error {
 	vs := obj.MakeTags(ctx, tagList)
 	for _, v := range vs {
-		log.Infof(ctx, ">>"+v.MainTag+" : "+v.SubTag)
+		//		log.Infof(ctx, ">>"+v.MainTag+" : "+v.SubTag)
 		tag := obj.NewTag(ctx, v.MainTag, v.SubTag, targetId, v.Type)
+		tag.gaeObject.Info = info
+		tag.gaeObject.Owner = owner
 		err := tag.SaveOnDB(ctx)
 		if err != nil {
 			log.Infof(ctx, ">>"+err.Error())
@@ -73,22 +64,22 @@ func (obj *TagManager) DeletePairTags(ctx context.Context, tagList []string, inf
 	return nil
 }
 
-func (obj *TagManager) AddBasicTag(ctx context.Context, tag1 string, info string, targetId string) error {
-	return obj.AddTag(ctx, tag1, "", info, targetId, "main")
+func (obj *TagManager) AddBasicTag(ctx context.Context, tag1 string, targetId string, owner string, info string) error {
+	return obj.AddTag(ctx, tag1, "", targetId, "main", owner, info)
 }
 
-func (obj *TagManager) AddMainTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string) error {
-	return obj.AddTag(ctx, tag1, tag2, info, targetId, "main")
+func (obj *TagManager) AddMainTag(ctx context.Context, tag1 string, tag2 string, targetId string, owner string, info string) error {
+	return obj.AddTag(ctx, tag1, tag2, targetId, "main", owner, info)
 }
 
-func (obj *TagManager) AddSubTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string) error {
-	return obj.AddTag(ctx, tag1, tag2, info, targetId, "sub")
+func (obj *TagManager) AddSubTag(ctx context.Context, tag1 string, tag2 string, targetId string, owner string, info string) error {
+	return obj.AddTag(ctx, tag1, tag2, targetId, "sub", owner, info)
 }
 
 //
 //
 //
-func (obj *TagManager) AddTag(ctx context.Context, tag1 string, tag2 string, info string, targetId string, Type string) error {
+func (obj *TagManager) AddTag(ctx context.Context, tag1 string, tag2 string, targetId string, Type string, owner string, info string) error {
 	mainTag := tag1
 	subTag := tag2
 	if subTag != "" && strings.Compare(tag1, tag2) <= 0 {
@@ -97,6 +88,7 @@ func (obj *TagManager) AddTag(ctx context.Context, tag1 string, tag2 string, inf
 	}
 	tag := obj.NewTag(ctx, mainTag, subTag, targetId, Type)
 	tag.gaeObject.Info = info
+	tag.gaeObject.Owner = owner
 	return tag.SaveOnDB(ctx)
 }
 

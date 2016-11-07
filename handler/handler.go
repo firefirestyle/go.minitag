@@ -39,6 +39,6 @@ func (obj *TagHandler) HandleAdd(w http.ResponseWriter, r *http.Request) {
 	//	token := inputProp.GetString("token", "")
 	ctx := appengine.NewContext(r)
 	for _, v := range tags {
-		obj.tagManager.AddBasicTag(ctx, v, "", value)
+		obj.tagManager.AddBasicTag(ctx, v, value, "test", "")
 	}
 }
