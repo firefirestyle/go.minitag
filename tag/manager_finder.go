@@ -57,6 +57,14 @@ func (obj *TagManager) FindTagFromTargetId(ctx context.Context, targetTag string
 	return obj.FindTagFromQuery(ctx, q, cursorSrc)
 }
 
+func (obj *TagManager) FindTagFromOwner(ctx context.Context, owner string, cursorSrc string) ([]*Tag, string, string) {
+	q := datastore.NewQuery(obj.kind)
+	q = q.Filter("ProjectId =", obj.rootGroup)
+	q = q.Filter("Owner =", owner)
+	q = q.Order("-Created").Limit(10)
+	return obj.FindTagFromQuery(ctx, q, cursorSrc)
+}
+
 func (obj *TagManager) FindTagKeyFromQuery(ctx context.Context, q *datastore.Query, cursorSrc string) ([]*datastore.Key, string, string) {
 	cursor := obj.newCursorFromSrc(cursorSrc)
 	if cursor != nil {
