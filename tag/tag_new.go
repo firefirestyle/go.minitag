@@ -11,8 +11,8 @@ import (
 )
 
 func (obj *TagManager) NewTag(ctx context.Context, mainTag string, //
-	subTag string, target string, tagType string) *MiniTag {
-	ret := new(MiniTag)
+	subTag string, target string, tagType string) *Tag {
+	ret := new(Tag)
 	ret.gaeObject = new(GaeObjectTag)
 	ret.gaeObject.ProjectId = obj.rootGroup
 	ret.gaeObject.MainTag = mainTag
@@ -60,9 +60,9 @@ func (obj *TagManager) GetKeyInfoFromStringId(stringId string) TagKeyInfo {
 	}
 }
 
-func (obj *TagManager) NewTagFromKey(ctx context.Context, gaeKey *datastore.Key) (*MiniTag, error) {
+func (obj *TagManager) NewTagFromKey(ctx context.Context, gaeKey *datastore.Key) (*Tag, error) {
 
-	ret := new(MiniTag)
+	ret := new(Tag)
 	ret.kind = obj.kind
 	ret.gaeObject = new(GaeObjectTag)
 	ret.gaeObjectKey = gaeKey

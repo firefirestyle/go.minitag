@@ -21,41 +21,41 @@ type GaeObjectTag struct {
 	Type      string
 }
 
-type MiniTag struct {
+type Tag struct {
 	gaeObject    *GaeObjectTag
 	gaeObjectKey *datastore.Key
 	kind         string
 }
 
-func (obj *MiniTag) GetProjectId() string {
+func (obj *Tag) GetProjectId() string {
 	return obj.gaeObject.ProjectId
 }
 
-func (obj *MiniTag) GetMainTag() string {
+func (obj *Tag) GetMainTag() string {
 	return obj.gaeObject.MainTag
 }
 
-func (obj *MiniTag) GetSubTag() string {
+func (obj *Tag) GetSubTag() string {
 	return obj.gaeObject.SubTag
 }
 
-func (obj *MiniTag) GetTargetId() string {
+func (obj *Tag) GetTargetId() string {
 	return obj.gaeObject.TargetId
 }
 
-func (obj *MiniTag) GetCreated() time.Time {
+func (obj *Tag) GetCreated() time.Time {
 	return obj.gaeObject.Created
 }
 
-func (obj *MiniTag) GetPriority() int {
+func (obj *Tag) GetPriority() int {
 	return obj.gaeObject.Priority
 }
 
-func (obj *MiniTag) GetGaeObjectKey() *datastore.Key {
+func (obj *Tag) GetGaeObjectKey() *datastore.Key {
 	return obj.gaeObjectKey
 }
 
-func (obj *MiniTag) SaveOnDB(ctx context.Context) error {
+func (obj *Tag) SaveOnDB(ctx context.Context) error {
 	_, err := datastore.Put(ctx, obj.gaeObjectKey, obj.gaeObject)
 	memSrc, errMemSrc := obj.toJson()
 	if err == nil && errMemSrc == nil {
@@ -68,7 +68,7 @@ func (obj *MiniTag) SaveOnDB(ctx context.Context) error {
 	return err
 }
 
-func (obj *MiniTag) toJson() (string, error) {
+func (obj *Tag) toJson() (string, error) {
 	v := map[string]interface{}{
 		TypeRootGroup: obj.gaeObject.ProjectId,
 		TypeMainTag:   obj.gaeObject.MainTag,
@@ -84,7 +84,7 @@ func (obj *MiniTag) toJson() (string, error) {
 }
 
 //
-func (obj *MiniTag) SetParamFromsJson(ctx context.Context, source []byte) error {
+func (obj *Tag) SetParamFromsJson(ctx context.Context, source []byte) error {
 	v := make(map[string]interface{})
 	e := json.Unmarshal(source, &v)
 	if e != nil {

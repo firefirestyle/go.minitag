@@ -25,7 +25,7 @@ import (
 
 https://cloud.google.com/appengine/docs/go/config/indexconfig#updating_indexes
 */
-func (obj *TagManager) FindTags(ctx context.Context, mainTag string, subTag string, cursorSrc string) ([]*MiniTag, string, string) {
+func (obj *TagManager) FindTags(ctx context.Context, mainTag string, subTag string, cursorSrc string) ([]*Tag, string, string) {
 	q := datastore.NewQuery(obj.kind)
 	q = q.Filter("ProjectId =", obj.rootGroup)
 	q = q.Filter("MainTag =", mainTag)
@@ -49,7 +49,7 @@ func (obj *TagManager) FindTags(ctx context.Context, mainTag string, subTag stri
     direction: desc
 https://cloud.google.com/appengine/docs/go/config/indexconfig#updating_indexes
 */
-func (obj *TagManager) FindTagFromTargetId(ctx context.Context, targetTag string, cursorSrc string) ([]*MiniTag, string, string) {
+func (obj *TagManager) FindTagFromTargetId(ctx context.Context, targetTag string, cursorSrc string) ([]*Tag, string, string) {
 	q := datastore.NewQuery(obj.kind)
 	q = q.Filter("ProjectId =", obj.rootGroup)
 	q = q.Filter("TargetId =", targetTag)
@@ -86,7 +86,7 @@ func (obj *TagManager) FindTagKeyFromQuery(ctx context.Context, q *datastore.Que
 	return retUser, cursorOne, cursorNext
 }
 
-func (obj *TagManager) FindTagFromQuery(ctx context.Context, q *datastore.Query, cursorSrc string) ([]*MiniTag, string, string) {
+func (obj *TagManager) FindTagFromQuery(ctx context.Context, q *datastore.Query, cursorSrc string) ([]*Tag, string, string) {
 	cursor := obj.newCursorFromSrc(cursorSrc)
 	if cursor != nil {
 		q = q.Start(*cursor)
@@ -94,7 +94,7 @@ func (obj *TagManager) FindTagFromQuery(ctx context.Context, q *datastore.Query,
 	q = q.KeysOnly()
 	founds := q.Run(ctx)
 
-	var retUser []*MiniTag
+	var retUser []*Tag
 
 	var cursorNext string = ""
 	var cursorOne string = ""
